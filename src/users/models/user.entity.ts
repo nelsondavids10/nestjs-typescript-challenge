@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+import { Role } from 'src/auth/enums/roles.enum';
 import {
   Column,
   CreateDateColumn,
@@ -44,6 +46,9 @@ export class User {
     nullable: false,
   })
   password: string;
+
+  @Column("simple-array", { default: ['guest'] })
+  roles: Role[];  // Nueva columna para roles
 
   @CreateDateColumn({
     name: 'created_at',

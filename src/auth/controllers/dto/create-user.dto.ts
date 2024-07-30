@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { ArrayNotEmpty, ArrayUnique, IsArray, IsEmail, IsEnum, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { Role } from '../../../auth/enums/roles.enum';
 
 export class CreateUserDto {
   @ApiPropertyOptional({ example: 'John' })
@@ -21,4 +23,11 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MaxLength(80)
   password: string;
+
+  @ApiProperty({ example: ['guest', 'admin'] })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsEnum(Role, { each: true })
+  roles: Role[];
 }

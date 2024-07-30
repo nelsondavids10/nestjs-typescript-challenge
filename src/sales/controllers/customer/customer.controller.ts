@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -22,15 +23,19 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../../../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../auth/guards/roles.guard';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { Role } from '../../../auth/enums/roles.enum';
 
 @ApiTags('Customers')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('/api/customers')
 export class CustomerController {
-  constructor(private customerService: CustomerService) {}
+  constructor(private customerService: CustomerService) { }
 
   @Get()
+  @Roles(Role.Admin, Role.Customer)
   @ApiOperation({ summary: 'Get all customers' })
   @ApiResponse({
     status: 200,
@@ -66,6 +71,7 @@ export class CustomerController {
   }
 
   @Get(':custCode')
+  @Roles(Role.Admin, Role.Customer)
   @ApiOperation({ summary: 'Get customer by custCode with its agent' })
   @ApiResponse({
     status: 200,
@@ -113,6 +119,7 @@ export class CustomerController {
   }
 
   @Post()
+  @Roles(Role.Admin, Role.Customer)
   @ApiOperation({ summary: 'Create a new customer' })
   @ApiBody({ type: CreateCustomerDto })
   @ApiResponse({
@@ -153,6 +160,7 @@ export class CustomerController {
   }
 
   @Patch(':custCode')
+  @Roles(Role.Admin, Role.Customer)
   @ApiOperation({ summary: 'Update an existing customer' })
   @ApiBody({ type: UpdateCustomerDto })
   @ApiResponse({
@@ -185,6 +193,7 @@ export class CustomerController {
   }
 
   @Delete(':custCode')
+  @Roles(Role.Admin, Role.Customer)
   @ApiOperation({ summary: 'Delete an existing customer by its custCode' })
   @ApiResponse({
     status: 200,

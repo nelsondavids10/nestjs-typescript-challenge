@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -30,15 +31,18 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../../../auth/guards/jwt-auth.guard';
-
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { RolesGuard } from '../../../auth/guards/roles.guard';
+import { Role } from '../../../auth/enums/roles.enum';
 @ApiTags('Orders')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('/api/orders')
 export class OrderController {
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService) { }
 
   @Get('total-amount-by-customer')
+  @Roles(Role.Admin, Role.Agent, Role.Customer)
   @ApiOperation({ summary: 'Get total amount of orders group by customer' })
   @ApiResponse({
     status: 200,
@@ -61,6 +65,7 @@ export class OrderController {
   }
 
   @Get('total-amount-by-agent')
+  @Roles(Role.Admin, Role.Agent, Role.Customer)
   @ApiOperation({ summary: 'Get total amount of orders group by agent' })
   @ApiResponse({
     status: 200,
@@ -83,6 +88,7 @@ export class OrderController {
   }
 
   @Get('total-amount-by-country')
+  @Roles(Role.Admin, Role.Agent, Role.Customer)
   @ApiOperation({ summary: 'Get total amount of orders group by country' })
   @ApiResponse({
     status: 200,
@@ -105,6 +111,7 @@ export class OrderController {
   }
 
   @Get('/')
+  @Roles(Role.Admin, Role.Agent, Role.Customer)
   @ApiOperation({ summary: 'Get all orders (paginated)' })
   @ApiQuery({ name: 'page', required: false })
   @ApiResponse({
@@ -199,6 +206,7 @@ export class OrderController {
   }
 
   @Get(':ordNum')
+  @Roles(Role.Admin, Role.Agent, Role.Customer)
   @ApiOperation({ summary: 'Get an order by ordNum' })
   @ApiResponse({
     status: 200,
@@ -253,6 +261,7 @@ export class OrderController {
   }
 
   @Post()
+  @Roles(Role.Admin, Role.Agent, Role.Customer)
   @ApiOperation({ summary: 'Create a new order' })
   @ApiBody({ type: CreateOrderDto })
   @ApiResponse({
@@ -286,6 +295,7 @@ export class OrderController {
   }
 
   @Patch(':ordNum')
+  @Roles(Role.Admin, Role.Agent, Role.Customer)
   @ApiOperation({ summary: 'Update an existing order' })
   @ApiResponse({
     status: 200,
@@ -317,6 +327,7 @@ export class OrderController {
   }
 
   @Delete(':ordNum')
+  @Roles(Role.Admin, Role.Agent, Role.Customer)
   @ApiOperation({ summary: 'Delete an existing order by its ordNum' })
   @ApiOperation({ summary: 'Delete an existing customer by its custCode' })
   @ApiResponse({

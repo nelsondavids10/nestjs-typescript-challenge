@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -22,15 +23,19 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../../../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../auth/guards/roles.guard';
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { Role } from '../../../auth/enums/roles.enum';
 
 @ApiTags('Agents')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('/api/agents')
 export class AgentController {
-  constructor(private agentService: AgentService) {}
+  constructor(private agentService: AgentService) { }
 
   @Get()
+  @Roles(Role.Admin, Role.Agent)
   @ApiOperation({ summary: 'Get all agents' })
   @ApiResponse({
     status: 200,
@@ -61,6 +66,7 @@ export class AgentController {
   }
 
   @Get(':agentCode')
+  @Roles(Role.Admin, Role.Agent)
   @ApiOperation({ summary: 'Get agent by agentCode with its customers' })
   @ApiResponse({
     status: 200,
@@ -110,6 +116,7 @@ export class AgentController {
   }
 
   @Post()
+  @Roles(Role.Admin, Role.Agent)
   @ApiOperation({ summary: 'Create a new agent' })
   @ApiBody({ type: CreateAgentDto })
   @ApiResponse({
@@ -142,6 +149,7 @@ export class AgentController {
   }
 
   @Patch(':agentCode')
+  @Roles(Role.Admin, Role.Agent)
   @ApiOperation({ summary: 'Update an existing agents' })
   @ApiBody({ type: UpdateAgentDto })
   @ApiResponse({
@@ -163,6 +171,7 @@ export class AgentController {
   }
 
   @Delete(':agentCode')
+  @Roles(Role.Admin, Role.Agent)
   @ApiOperation({ summary: 'Delete an existing agents by its agentCode' })
   @ApiResponse({
     status: 200,

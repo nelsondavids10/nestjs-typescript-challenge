@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import { Injectable } from '@nestjs/common';
 import { UsersService } from './../../users/services/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -9,7 +11,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUserLocal(email: string, password: string): Promise<any> {
     const user: User = await this.usersService.findOneByEmail(email);
@@ -25,7 +27,7 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const payload = { userId: user.id, email: user.email };
+    const payload = { userId: user.id, email: user.email, roles: user.roles };
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -37,7 +39,8 @@ export class AuthService {
 
   async createUser(userDto: CreateUserDto) {
     const user: User = await this.usersService.create(userDto);
-    const payload = { userId: user.id, email: user.email };
+
+    const payload = { userId: user.id, email: user.email, roles: user.roles };
     return {
       access_token: this.jwtService.sign(payload),
     };
